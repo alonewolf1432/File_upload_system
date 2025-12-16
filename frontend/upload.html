@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Upload Files</title>
+  <link rel="stylesheet" href="styles1.css" />
+</head>
+<body>
+  <header>
+    <h2 class="logo">Logo</h2>
+    <nav class="navigation">
+      <a href="#">Home</a>
+      <a href="#">About</a>
+      <a href="#">Services</a>
+      <a href="#">Contact</a>
+      <button id="logoutBtn" class="logout-btn">Logout</button>
+    </nav>
+  </header>
+
+  <div class="upload-wrapper">
+    <div class="container">
+      <h3 style="color: rgba(118, 61, 61, 0.793);">Upload Reference Answers</h3>
+      <form id="form-reference" class="upload-form">
+        <input type="file" name="file" required />
+        <button type="submit">Upload</button>
+        <div class="msg" id="ref-msg"></div>
+      </form>
+    </div>
+
+    <div class="container">
+      <h3>Upload Students' Answers</h3>
+      <form id="form-students" class="upload-form">
+        <input type="file" name="file" required />
+        <button type="submit">Upload</button>
+        <div class="msg" id="stud-msg"></div>
+      </form>
+    </div>
+
+    <div class="container">
+      <h3>Upload Questions</h3>
+      <form id="form-questions" class="upload-form">
+        <input type="file" name="file" required />
+        <button type="submit">Upload</button>
+        <div class="msg" id="q-msg"></div>
+      </form>
+    </div>
+</div>
+
+
+  <script>
+    const token = localStorage.getItem('token');
+    const user = JSON.parse(localStorage.getItem('user') || 'null');
+    const API_BASE = 'http://localhost:5000/api';
+
+    if (!token || !user) {
+      alert('You must login first');
+      window.location.href = 'index.html';
+    }
+
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      window.location.href = 'index.html';
+    });
+
+    async function uploadFile(formEl, endpoint, msgEl) {
+      const fd = new FormData(formEl);
+      try {
+        const res = await fetch(API_BASE + '/upload/' + endpoint, {
+          method: 'POST',
+          headers: { Authorization: 'Bearer ' + token },
+          body: fd,
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Upload failed');
+        msgEl.classList.remove('err');
+        msgEl.innerText = data.message;
+      } catch (err) {
+        msgEl.classList.add('err');
+        msgEl.innerText = err.message;
+      }
+    }
+
+    document.getElementById('form-reference').addEventListener('submit', function (e) {
+      e.preventDefault();
+      uploadFile(this, 'reference', document.getElementById('ref-msg'));
+    });
+    document.getElementById('form-students').addEventListener('submit', function (e) {
+      e.preventDefault();
+      uploadFile(this, 'students', document.getElementById('stud-msg'));
+    });
+    document.getElementById('form-questions').addEventListener('submit', function (e) {
+      e.preventDefault();
+      uploadFile(this, 'questions', document.getElementById('q-msg'));
+    });
+  </script>
+</body>
+</html>
