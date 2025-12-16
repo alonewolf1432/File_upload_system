@@ -43,28 +43,6 @@ A full-stack web application that allows users to register, log in, and securely
 
 ---
 
-## 📸 Screenshots
-
-### 🏠 Home Page
-*(Insert image here)*
-
-markdown
-Copy code
-
-### 🔐 Login / Register Popup
-*(Insert image here)*
-
-arduino
-Copy code
-
-### 📤 File Upload Page
-*(Insert image here)*
-
-yaml
-Copy code
-
----
-
 ## 📂 Project Structure
 
 final_year_project/
